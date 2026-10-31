@@ -1,0 +1,8 @@
+streamlit>=1.40,<2
+inference-sdk>=0.50
+opencv-python>=4.9
+Pillow>=10
+numpy>=1.26
+pandas>=2.0
+python-dotenv>=1.0
+imageio-ffmpeg>=0.5
