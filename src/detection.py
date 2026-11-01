@@ -62,9 +62,9 @@ def process_video(
     frame_count = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
     width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
     height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
-    if fps <= 0 or frame_count <= 0 or width <= 0 or height <= 0 or fps > 60:
+    if fps <= 0 or frame_count <= 0 or width <= 0 or height <= 0:
         cap.release()
-        raise ValueError("Unsupported video properties. Video must have valid FPS and be at most 60 FPS.")
+        raise ValueError("Unsupported video properties. Video must have valid FPS, frame count, width, and height.")
     duration = frame_count / fps
     if duration > max_seconds:
         cap.release()

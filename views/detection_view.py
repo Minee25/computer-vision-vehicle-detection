@@ -21,9 +21,9 @@ from src.preprocessing import load_image, vehicle_group
 ROOT = Path(__file__).resolve().parents[1]
 load_dotenv(ROOT / ".env")
 MODEL_ID = os.getenv("ROBOFLOW_MODEL_ID", MODEL_ID_DEFAULT)
-MAX_IMAGE_MB = 10
-MAX_VIDEO_MB = 30
-MAX_VIDEO_SECONDS = 10
+MAX_IMAGE_MB = 100
+MAX_VIDEO_MB = 100
+MAX_VIDEO_SECONDS = 20
 INPUT_DIR = ROOT / "images" / "input"
 IMAGE_RESULTS_DIR = ROOT / "images" / "results"
 RESULTS_DIR = ROOT / "results"
@@ -87,8 +87,9 @@ def main() -> None:
         confidence = 0.25
         st.caption("Detection threshold: 0.25")
         st.divider()
-        st.caption("Image: สูงสุด 10 MB")
-        st.caption("Video: MP4/MOV, สูงสุด 30 MB และ 10 วินาที")
+        st.caption("Image/Video: สูงสุด 100 MB ต่อไฟล์")
+        st.caption("รองรับภาพ/วิดีโอ 4K; ย่อขนาดก่อนส่งโมเดล และวิดีโอผลลัพธ์ไม่เกิน Full HD")
+        st.caption("Video: MP4/MOV ยาวไม่เกิน 20 วินาที")
         st.caption("วิดีโอจะสุ่มตรวจเฟรมทุกประมาณ 0.2 วินาที")
 
     if not api_key:
@@ -128,14 +129,14 @@ def main() -> None:
                     except OSError:
                         pass
                 st.caption(f"{width}×{height} · {fps:.1f} FPS · {duration:.2f} วินาที · {file_size_mb:.2f} MB")
-                if duration <= 0 or fps > 60:
-                    st.error("อ่านข้อมูลวิดีโอไม่ได้ หรือ FPS สูงกว่า 60")
+                if duration <= 0:
+                    st.error("อ่านข้อมูลวิดีโอไม่ได้")
                 elif duration > MAX_VIDEO_SECONDS:
                     st.warning(f"วิดีโอยาวเกิน {MAX_VIDEO_SECONDS} วินาที กรุณาตัดคลิปให้สั้นลงก่อน")
 
         with right:
             st.subheader("ผลตรวจจับ")
-            run_disabled = not api_key or (is_video and (duration <= 0 or duration > MAX_VIDEO_SECONDS or fps > 60))
+            run_disabled = not api_key or (is_video and (duration <= 0 or duration > MAX_VIDEO_SECONDS))
             if st.button("เริ่มตรวจจับ", type="primary", disabled=run_disabled, width="stretch"):
                 client = cached_client(api_key)
                 run_id = make_run_id(uploaded.name)
