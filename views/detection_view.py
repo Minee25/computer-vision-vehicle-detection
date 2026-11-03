@@ -155,6 +155,7 @@ def main() -> None:
                         detection_rows = pd.DataFrame([
                             {
                                 "vehicle_type": vehicle_group(str(item.get("class", "unknown"))),
+                                "confidence": round(float(item.get("confidence", 0) or 0), 4),
                                 "x_center": item.get("x"), "y_center": item.get("y"),
                                 "width": item.get("width"), "height": item.get("height"),
                             }
@@ -210,7 +211,7 @@ def main() -> None:
                             frame_csv = samples.to_csv(index=False).encode("utf-8-sig")
                             frame_saved = save_output(RESULTS_DIR, f"{run_id}_frame_statistics.csv", frame_csv)
                             st.download_button("ดาวน์โหลดสถิติแต่ละเฟรม CSV", frame_csv, "video_frame_statistics.csv", "text/csv")
-                        detections = pd.DataFrame(detection_rows, columns=["source", "second", "vehicle_type", "x_center", "y_center", "width", "height"])
+                        detections = pd.DataFrame(detection_rows, columns=["source", "second", "vehicle_type", "confidence", "x_center", "y_center", "width", "height"])
                         detection_csv = detections.to_csv(index=False).encode("utf-8-sig")
                         detection_saved = save_output(RESULTS_DIR, f"{run_id}_detections.csv", detection_csv)
                         st.success(f"บันทึกไฟล์แล้ว: {input_saved} · {video_saved} · {frame_saved if not samples.empty else ''} · {detection_saved}")
