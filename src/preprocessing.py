@@ -76,7 +76,7 @@ def draw_predictions(image_rgb: np.ndarray, predictions: list[dict], confidence_
 
         class_name = vehicle_group(str(prediction.get("class", "vehicle")))
         color = (34, 197, 94)
-        label = class_name
+        label = f"{class_name} {confidence:.2f}"
         cv2.rectangle(output, (x1, y1), (x2, y2), color, thickness)
         text_y = max(20, y1 - 7)
         cv2.putText(output, label, (x1, text_y), cv2.FONT_HERSHEY_SIMPLEX, 0.55, color, 2, cv2.LINE_AA)
@@ -91,6 +91,7 @@ def predictions_to_rows(predictions: list[dict], source: str, second: float | No
             "source": source,
             "second": None if second is None else round(second, 2),
             "vehicle_type": vehicle_group(str(prediction.get("class", "unknown"))),
+            "confidence": round(float(prediction.get("confidence", 0) or 0), 4),
             "x_center": prediction.get("x"),
             "y_center": prediction.get("y"),
             "width": prediction.get("width"),
