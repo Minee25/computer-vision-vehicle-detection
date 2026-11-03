@@ -16,3 +16,6 @@ Thumbs.db
 !/images/results/.gitkeep
 /results/*
 !/results/.gitkeep
+
+# Local temporary files
+/.tmp/
